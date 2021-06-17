@@ -18,12 +18,16 @@ var contractins=new web3.eth.Contract([
 		"constant": false,
 		"inputs": [
 			{
-				"name": "hash",
+				"name": "hashs",
 				"type": "string"
 			},
 			{
-				"name": "name",
+				"name": "names",
 				"type": "string"
+			},
+			{
+				"name": "num",
+				"type": "uint256"
 			}
 		],
 		"name": "addipfshash",
@@ -153,8 +157,21 @@ var contractins=new web3.eth.Contract([
 	},
 	{
 		"constant": true,
-		"inputs": [],
-		"name": "test",
+		"inputs": [
+			{
+				"name": "str",
+				"type": "bytes"
+			},
+			{
+				"name": "offset",
+				"type": "uint256"
+			},
+			{
+				"name": "size",
+				"type": "uint256"
+			}
+		],
+		"name": "getsubstr",
 		"outputs": [
 			{
 				"name": "",
@@ -165,7 +182,7 @@ var contractins=new web3.eth.Contract([
 		"stateMutability": "view",
 		"type": "function"
 	}
-],"0x952120f2c81f19c67131fB4e1ab059E5A365758C")
+],"0x06b90Fbb1E5171f00De674F15582e6846716C749")
 
 
 
@@ -179,27 +196,41 @@ app.get("/",(req,res)=>{
 
 
 app.post("/",async (req,res)=>{
-   if(req.files)
-   {    
-       try{
-       const name=req.files.fileUpload.name;
-       const coinbase=await web3.eth.getCoinbase().then(res=>res);
-       const content=req.files.fileUpload.data;
-       if(name.endsWith(".jpg") || name.endsWith(".mp4") || name.endsWith(".mkv") || name.endsWith(".mp3") || name.endsWith(".png") || name.endsWith(".pdf"))
-        {
-            const fileadded =await ipfs.add({path: name,content: content});
-			console.log(fileadded);
-
-                await contractins.methods.addipfshash(fileadded.cid.toString(),name).send({from: coinbase,gas: 900000}).then(function(res){
-                    console.log(res);
-                });
-        
+	if(req.files)
+	{
+		let name;
+		let names="";
+		let hashs="";
+		let fileadded;
+		let i=0;
+		if(req.files.fileUpload.length==undefined)
+		{
+			req.files.fileUpload=[req.files.fileUpload];
 		}
-    }catch(error){
-        console.log(error);
-        res.redirect("/");
-    }
-    }
+		for( i=0;i<req.files.fileUpload.length;i++)
+		{
+			name=req.files.fileUpload[i].name;
+			console.log(name);
+			if(!(name.endsWith(".jpg") || name.endsWith(".mp4") || name.endsWith(".mkv") || name.endsWith(".mp3") || name.endsWith(".png") || name.endsWith(".pdf")))
+				break;
+			names=names+String.fromCharCode(name.length)+name;
+		}
+		
+		if(i==req.files.fileUpload.length)
+		{
+			for(i=0;i<req.files.fileUpload.length;i++)	
+			{
+				fileadded = await ipfs.add({path: req.files.fileUpload[i].name, content: req.files.fileUpload[i].data});
+				console.log(fileadded);
+				hashs=hashs+fileadded.cid.toString();
+			}
+			console.log(hashs);
+			const coinbase=await web3.eth.getCoinbase().then(res=>res);
+			await contractins.methods.addipfshash(hashs,names,req.files.fileUpload.length).send({from: coinbase,gas: 4712387 }).then(function(res){
+				console.log(res);
+			});
+		}
+	}
    res.redirect("/");
 })
 

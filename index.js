@@ -243,7 +243,7 @@ app.get("/getfiles", async (req,res)=>{
 		for(let i=0;i<Num;i++)
 		{
 			name=Names.substr(offset+1,Names.charCodeAt(offset));
-			offset+=Names.charCodeAt(offset);	
+			offset+=Names.charCodeAt(offset)+1;	
 			filetype=FileTypes.substr(i*4,4);
 			hash=Hashs.substr(i*46,46);
 			chunks=[];

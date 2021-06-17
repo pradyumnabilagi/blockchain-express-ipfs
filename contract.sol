@@ -14,27 +14,42 @@ contract Greeting {
     mapping(string => address[]) owner;   
     hashName[] ipfshash;
 
-    function addipfshash(string hash,string name) public{
-        require(bytes(name).length>0);
-        bytes memory temp=bytes(name);
-        bytes memory filetype=new bytes(4);
-        filetype[0]=temp[temp.length-4];
-        filetype[1]=temp[temp.length-3];
-        filetype[2]=temp[temp.length-2];
-        filetype[3]=temp[temp.length-1];
+    function addipfshash(string hashs,bytes Names,uint num) public{
+        bytes memory Hashs=bytes(hashs);
+        require(Hashs.length==num*46 && Names.length>0);
         
-        require(bytes(hash).length==46 && owner[hash].length==0  );
+        uint i=0;
+        uint offset=0;
+        uint size=0;
+        string memory hash;
+        string memory name;
+        string memory filetype;
         
-        bytes memory Name=new bytes(temp.length-4);
-        for(uint j=0;j<temp.length-4;j++)
+        for(i=0;i<num;i++)
         {
-            Name[j]=temp[j];
+            size=uint(Names[offset]);
+            require(offset+1+size<Names.length);
+            hash=string(getsubstr(Hashs,i*46,46));
+            name=string(getsubstr(Names,offset+1,size-4));
+            filetype=string(getsubstr(Names,offset+size-3,4));
+            var owners=owner[hash];
+            if(owners.length==0)
+                owners.push(msg.sender);
+            ipfshash.push(hashName(hash,name,filetype));
+            offset+=size+1;
         }
-        
-        var owneraddrs= owner[hash];
-        owneraddrs.push(msg.sender);
-        ipfshash.push(hashName(hash,string(Name),string(filetype)));
     }
+    
+    function getsubstr(bytes str,uint offset,uint size) pure public returns (bytes){
+        bytes memory ret=new bytes(size);
+        uint i=0;
+        for(i=0;i<size;i++)
+        {
+            ret[i]=str[offset+i];
+        }
+        return ret;
+    }
+    
     
     function getipfsnum() view public returns (uint256){
         return ipfshash.length;
@@ -167,13 +182,6 @@ contract Greeting {
     }
     
     
-    function test() pure public returns (bytes){
-       
-        bytes memory t=new bytes(3);
-        t[0]=byte(2);
-        t[1]=byte(3);
-        t[2]=byte(4);
-        return t;
-    }
+
     
 }

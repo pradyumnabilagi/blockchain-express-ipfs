@@ -15,6 +15,7 @@ contract Greeting {
     hashName[] ipfshash;
 
     function addipfshash(string hash,string name) public{
+        require(bytes(name).length>0);
         bytes memory temp=bytes(name);
         bytes memory filetype=new bytes(4);
         filetype[0]=temp[temp.length-4];
@@ -67,16 +68,23 @@ contract Greeting {
         return ipfshash[j].name;
     } 
   
-    function getipfshashs(string subname,uint maxlen) view public returns (string Hashs,uint Num,string FileTypes ){
+    struct funcvars{
+        uint[]  selindices;
+        bytes hashs;
+        bytes filetypes;
+        bytes temp1;
+        bytes temp;
+        uint num;
+        uint namelen;
+    }
+    
+    
+    function getipfshashs(string subname,uint maxlen) view public returns (string Hashs,uint Num,string FileTypes ,string Names){
+        string memory tdata="";
+        funcvars memory  vars= funcvars(new uint[](maxlen),new bytes(maxlen*46),new bytes(maxlen*4),bytes(tdata),bytes(tdata),0,0);
         uint i=0;
         uint j=0;
-        bytes memory temp1;
-        bytes memory temp;
-        bytes memory hashs=new bytes(maxlen*46);
-        uint num=0;
-        bytes memory filetypes=new bytes(maxlen*4);
-       
-        while(i<ipfshash.length && num<maxlen )
+        while(i<ipfshash.length && vars.num<maxlen )
         {
             
             if(isSubstr(ipfshash[i].name,subname))
@@ -91,23 +99,40 @@ contract Greeting {
                 }
                 if(j<owners.length)
                 {
-                    temp1=bytes(ipfshash[i].hash);
-                    temp=bytes(ipfshash[i].filetype);
+                    vars.namelen+=bytes(ipfshash[i].name).length;
+                    vars.temp1=bytes(ipfshash[i].hash);
+                    vars.temp=bytes(ipfshash[i].filetype);
+                    vars.selindices[vars.num]=i;
                     for(uint k=0;k<46;k++)
                     {
-                        hashs[num*46+k]=temp1[k];
+                        vars.hashs[vars.num*46+k]=vars.temp1[k];
                     }
                     for(k=0;k<4;k++)
                     {
-                        filetypes[num*4+k]=temp[k];
+                        vars.filetypes[vars.num*4+k]=vars.temp[k];
                     }
-                    num++;
+                    vars.num++;
                 }
             }
             i++;
         }
         
-        return (string(hashs),num,string(filetypes));
+        bytes memory names=new bytes(vars.namelen+vars.num);
+        uint offset=0;
+        
+        for(i=0;i<vars.num;i++)
+        {
+            vars.temp=bytes(ipfshash[vars.selindices[i]].name);
+            names[offset]=byte(vars.temp.length);
+            for(j=0;j<vars.temp.length;j++)
+            {
+                names[offset+j+1]=vars.temp[j];
+            }
+            offset+=vars.temp.length;
+        }
+        
+        
+        return (string(vars.hashs),vars.num,string(vars.filetypes),string(names));
     }
     
     
@@ -140,4 +165,15 @@ contract Greeting {
         owners[i]=owners[owners.length-1];
         delete owners[owners.length-1];
     }
+    
+    
+    function test() pure public returns (bytes){
+       
+        bytes memory t=new bytes(3);
+        t[0]=byte(2);
+        t[1]=byte(3);
+        t[2]=byte(4);
+        return t;
+    }
+    
 }

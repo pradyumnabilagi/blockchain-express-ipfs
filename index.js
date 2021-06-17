@@ -189,10 +189,12 @@ app.post("/",async (req,res)=>{
         {
             const fileadded =await ipfs.add({path: name,content: content});
 			console.log(fileadded);
+
                 await contractins.methods.addipfshash(fileadded.cid.toString(),name).send({from: coinbase,gas: 900000}).then(function(res){
                     console.log(res);
                 });
-        }
+        
+		}
     }catch(error){
         console.log(error);
         res.redirect("/");

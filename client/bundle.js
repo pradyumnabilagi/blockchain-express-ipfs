@@ -203,7 +203,7 @@ document.getElementById("search").addEventListener("click",async ()=>{
     {
         let li=document.createElement("li");
         let a=document.createElement("a");
-        a.appendChild(document.createTextNode(result.data.links[i]));
+        a.appendChild(document.createTextNode(result.data.names[i]));
         a.href="/"+result.data.links[i];
         li.appendChild(a);
         linklist.appendChild(li);

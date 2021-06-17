@@ -8,6 +8,7 @@ var upload=require("express-fileupload");
 var app=express();
 var path=require("path");
 const { strict } = require("assert");
+const { off } = require("process");
 
 app.use(express.static('client'))
 app.use(express.static('static'))
@@ -126,6 +127,10 @@ var contractins=new web3.eth.Contract([
 			{
 				"name": "FileTypes",
 				"type": "string"
+			},
+			{
+				"name": "Names",
+				"type": "string"
 			}
 		],
 		"payable": false,
@@ -145,8 +150,22 @@ var contractins=new web3.eth.Contract([
 		"payable": false,
 		"stateMutability": "view",
 		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "test",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
 	}
-],"0x1ADA7E66b2278d3D33690795d03e57E5467C420A")
+],"0x952120f2c81f19c67131fB4e1ab059E5A365758C")
 
 
 
@@ -197,7 +216,7 @@ app.get("/getfiles", async (req,res)=>{
 	}
 	else
 	{	const coinbase=await web3.eth.getCoinbase().then(res=>res);
-		const {Hashs,Num,FileTypes}= await contractins.methods.getipfshashs(substring,max).call({"from":coinbase},function(err,res){
+		const {Hashs,Num,FileTypes,Names}= await contractins.methods.getipfshashs(substring,max).call({"from":coinbase},function(err,res){
 			return res;
 		});
 		let hash;
@@ -205,8 +224,8 @@ app.get("/getfiles", async (req,res)=>{
 		let chunks=[];
 		let retlist=[];
 		let retname=[];
-		
-
+		let name;
+		let offset=0;
 		const directory = 'static';
 
 		fs.readdir(directory, (err, files) => {
@@ -221,6 +240,8 @@ app.get("/getfiles", async (req,res)=>{
 
 		for(let i=0;i<Num;i++)
 		{
+			name=Names.substr(offset+1,Names.charCodeAt(offset));
+			offset+=Names.charCodeAt(offset);	
 			filetype=FileTypes.substr(i*4,4);
 			hash=Hashs.substr(i*46,46);
 			chunks=[];
@@ -229,10 +250,11 @@ app.get("/getfiles", async (req,res)=>{
 				chunks.push(chunk);
 			}
 			chunks=Buffer.concat(chunks);
-			fs.writeFile('./static/'+i+filetype,chunks, function (err) {
+			fs.writeFile('./static/'+hash+filetype,chunks, function (err) {
 				if (err) return console.log(err);
 			});
-			retlist.push(i+filetype);
+			retlist.push(hash+filetype);
+			retname.push(name+filetype);
 		}
 
 		res.status(200).json({"links":retlist,"names":retname});

@@ -4,19 +4,67 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=, initial-scale=1.0">
-    <title>Document</title>
+    <title>IPFS files</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap" rel="stylesheet">
 </head>
+<style>
+    body{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: rgb(211, 228, 235);
+        font-family: 'Ubuntu', sans-serif;
+        
+    }
+    .input{
+        width: 210px;
+        height: 30px;
+        border-radius: 10px;
+        font-family: 'Ubuntu', sans-serif;
+        font-weight: bold;
+        font-size: 15px;
+    }
+    .button{
+       
+            width: 210px;
+            height: 35px;
+            border-radius: 10px;
+            font-family: 'Ubuntu', sans-serif;
+            font-weight: bold;
+            font-size: 15px;
+    }
+    #main{
+        border: 2px solid rgb(212, 212, 201);
+        height: 450px;
+        width: 360px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: rgb(211, 186, 228);
+        border-radius: 10px;
+        box-shadow: 6px 5px 16px 3px black;
+        font-family: 'Ubuntu', sans-serif;
+        font-weight: bold;
+        
+    }
+</style>
 <body>
+    <br><br><br><br>
+    <div id="main">
     <h1>Search for files</h1>
-
-    search: <input type="text" name="substring" id="substring"><br>
-    max files: <input type="number" name="max" id="max"><br>
-    <button name="search" id="search">Get Image</button>
+    <br>
+     <input class="input" type="text" name="substring" id="substring" placeholder="search"><br><br>
+     <input class="input" type="number" name="max" id="max" placeholder="max files"><br><br>
+    <button class="button" name="search" id="search">Get Image</button>
    
     <ul id="links"></ul>
     <form action="/" method="get">
-        <button type="submit">Upload files</button>
+        <button class="button" type="submit">Upload files</button>
     </form>
     <script src="bundle.js"></script> 
+</div>
 </body>
 </html>

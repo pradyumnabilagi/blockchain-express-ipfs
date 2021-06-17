@@ -1,35 +1,76 @@
 <!doctype html>
 <html lang="en">
+
   <head>
-    <!-- Required meta tags s-->
+    <!-- Required meta tags s -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
 
-    <title>Hello, world!</title>
+    <title>IPFS-Blockchain</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap" rel="stylesheet">
   </head>
+  <style>
+      body{
+          background-color: rgb(211, 228, 235);
+          font-family: 'Ubuntu', sans-serif;
+      }
+      #main{
+          width: 100%;
+          height: 450px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          font-size: 15px;
+          font-family: 'Ubuntu', sans-serif;
+      }
+      .search{
+          padding: 30px;
+          border: solid 2px rgb(240, 175, 234);
+          border-radius: 15px;
+          font-size: 18px;
+          font-weight: bold;
+          font-family: 'Ubuntu', sans-serif;
+          background-color: rgb(167, 226, 250);
+      }
+      .search1{
+        padding: 30px;
+        border: solid 2px rgb(240, 175, 234);
+        width: 220px;
+        height: 70px;
+        font-family: 'Ubuntu', sans-serif;
+        font-size: 18px;
+        font-weight: bold;
+        border-radius: 15px;
+    }
+  </style>
   <body>
-    <h1>Upload Image!</h1>
+      <div id="main">
+    <h1>Upload files in IPFS</h1>
     <form action="/" method="POST" enctype="multipart/form-data">
         <div class="form-control">
-            <label class=""form-control>File upload</label>
-            <input type="file" id="fileUpload" name="fileUpload"  accept="image/*" />
+            <label form-control></label>
+            <input class="search" type="file" id="fileUpload" name="fileUpload"  accept="image/*" />
         </div>
         <div class="form-control">
-            <input type="submit"  text="Submit"/>
+            <br>
+            <input class="search1" type="submit"  text="Submit"/>
 
         </div>
         
     </form>
-
+<br><br>
     <form action="/searchfiles" method="get">
-      <button type="submit">Search files</button>
+        <h2>Click below to search files</h2>
+      <button class="search1" type="submit"><b>Search files</b></button>
     </form>
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+</div>
+    <!-- Optional JavaScript
+    jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>

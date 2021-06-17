@@ -173,7 +173,6 @@ app.post("/",async (req,res)=>{
                 await contractins.methods.addipfshash(fileadded.cid.toString(),name).send({from: coinbase,gas: 900000}).then(function(res){
                     console.log(res);
                 });
-            
         }
     }catch(error){
         console.log(error);

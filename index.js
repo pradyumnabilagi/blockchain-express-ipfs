@@ -1,7 +1,7 @@
 var fs=require("fs");
 var ipfsClient= require("ipfs-http-client")
 var Web3=require("web3")
-var web3=new Web3("http://localhost:8546");
+var web3=new Web3("http://localhost:8545");
 var ipfs = ipfsClient.create("http://localhost:5001");
 var express= require("express");
 var upload=require("express-fileupload");
@@ -182,7 +182,7 @@ var contractins=new web3.eth.Contract([
 		"stateMutability": "view",
 		"type": "function"
 	}
-],"0x06b90Fbb1E5171f00De674F15582e6846716C749")
+],"0x17c9D9329045E887EE2125B8445923453c4e6BBF")
 
 
 
@@ -226,7 +226,7 @@ app.post("/",async (req,res)=>{
 			}
 			console.log(hashs);
 			const coinbase=await web3.eth.getCoinbase().then(res=>res);
-			await contractins.methods.addipfshash(hashs,names,req.files.fileUpload.length).send({from: coinbase,gas: 4712387 }).then(function(res){
+			await contractins.methods.addipfshash(hashs,names,req.files.fileUpload.length).send({from: coinbase,gas:4172387 }).then(function(res){
 				console.log(res);
 			});
 		}

@@ -14,7 +14,8 @@ contract Greeting {
     mapping(string => address[]) owner;   
     hashName[] ipfshash;
 
-    function addipfshash(string hashs,bytes Names,uint num) public{
+    function addipfshash(string hashs,string names,uint num) public{
+        bytes memory Names=bytes(names);
         bytes memory Hashs=bytes(hashs);
         require(Hashs.length==num*46 && Names.length>0);
         
@@ -28,7 +29,7 @@ contract Greeting {
         for(i=0;i<num;i++)
         {
             size=uint(Names[offset]);
-            require(offset+1+size<Names.length);
+            require(offset+1+size<=Names.length);
             hash=string(getsubstr(Hashs,i*46,46));
             name=string(getsubstr(Names,offset+1,size-4));
             filetype=string(getsubstr(Names,offset+size-3,4));
@@ -143,7 +144,7 @@ contract Greeting {
             {
                 names[offset+j+1]=vars.temp[j];
             }
-            offset+=vars.temp.length;
+            offset+=vars.temp.length+1;
         }
         
         

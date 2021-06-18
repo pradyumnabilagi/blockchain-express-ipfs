@@ -1,7 +1,7 @@
 var fs=require("fs");
 var ipfsClient= require("ipfs-http-client")
 var Web3=require("web3")
-var web3=new Web3("http://localhost:8545");
+var web3=new Web3("http://localhost:8546");
 var ipfs = ipfsClient.create("http://localhost:5001");
 var express= require("express");
 var upload=require("express-fileupload");
@@ -28,41 +28,13 @@ var contractins=new web3.eth.Contract([
 			{
 				"name": "num",
 				"type": "uint256"
+			},
+			{
+				"name": "ispublic",
+				"type": "bool"
 			}
 		],
 		"name": "addipfshash",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "hash",
-				"type": "string"
-			},
-			{
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "addOwner",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "hash",
-				"type": "string"
-			}
-		],
-		"name": "removeSelf",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
@@ -154,36 +126,8 @@ var contractins=new web3.eth.Contract([
 		"payable": false,
 		"stateMutability": "view",
 		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "str",
-				"type": "bytes"
-			},
-			{
-				"name": "offset",
-				"type": "uint256"
-			},
-			{
-				"name": "size",
-				"type": "uint256"
-			}
-		],
-		"name": "getsubstr",
-		"outputs": [
-			{
-				"name": "",
-				"type": "bytes"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
 	}
-],"0x17c9D9329045E887EE2125B8445923453c4e6BBF")
-
+],"0xBe5ca14819edFC19a34CF36e7Efe2C23435369d6")
 
 
 app.use(express.json());
@@ -226,11 +170,15 @@ app.post("/",async (req,res)=>{
 			}
 			console.log(hashs);
 			const coinbase=await web3.eth.getCoinbase().then(res=>res);
-			await contractins.methods.addipfshash(hashs,names,req.files.fileUpload.length).send({from: coinbase,gas:4172387 }).then(function(res){
+		
+		
+			await contractins.methods.addipfshash(hashs,names,req.files.fileUpload.length,req.body.public=="on").send({from: coinbase,gas:4172387 }).then(function(res){
 				console.log(res);
 			});
 		}
 	}
+	
+
    res.redirect("/");
 })
 
@@ -293,6 +241,8 @@ app.get("/getfiles", async (req,res)=>{
 		res.status(200).json({"links":retlist,"names":retname});
 	}
 })
+
+
 
 
 

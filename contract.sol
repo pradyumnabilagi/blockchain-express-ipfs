@@ -9,15 +9,15 @@ contract Greeting {
         string hash;
         string name;
         string filetype;
+        bool ispublic;
     }
 
     mapping(string => address[]) owner;   
     hashName[] ipfshash;
 
-    function addipfshash(string hashs,string names,uint num) public{
+    function addipfshash(string hashs,string names,uint num,bool ispublic) public{
         bytes memory Names=bytes(names);
         bytes memory Hashs=bytes(hashs);
-        require(Hashs.length==num*46 && Names.length>0);
         
         uint i=0;
         uint offset=0;
@@ -29,19 +29,20 @@ contract Greeting {
         for(i=0;i<num;i++)
         {
             size=uint(Names[offset]);
-            require(offset+1+size<=Names.length);
             hash=string(getsubstr(Hashs,i*46,46));
             name=string(getsubstr(Names,offset+1,size-4));
             filetype=string(getsubstr(Names,offset+size-3,4));
             var owners=owner[hash];
             if(owners.length==0)
+            {    
                 owners.push(msg.sender);
-            ipfshash.push(hashName(hash,name,filetype));
+                ipfshash.push(hashName(hash,name,filetype,ispublic));
+            }
             offset+=size+1;
         }
     }
     
-    function getsubstr(bytes str,uint offset,uint size) pure public returns (bytes){
+    function getsubstr(bytes str,uint offset,uint size) pure private returns (bytes){
         bytes memory ret=new bytes(size);
         uint i=0;
         for(i=0;i<size;i++)
@@ -105,15 +106,8 @@ contract Greeting {
             
             if(isSubstr(ipfshash[i].name,subname))
             {
-                j=0;
-                var owners=owner[ipfshash[i].hash];
-                while(j<owners.length)
-                {
-                    if(owners[j]==msg.sender)
-                        break;
-                    j++;
-                }
-                if(j<owners.length)
+                
+                if(owner[ipfshash[i].hash][0]==msg.sender  || ipfshash[i].ispublic)
                 {
                     vars.namelen+=bytes(ipfshash[i].name).length;
                     vars.temp1=bytes(ipfshash[i].hash);
@@ -152,36 +146,7 @@ contract Greeting {
     }
     
     
-   function addOwner(string hash,address newOwner) public {
-       uint i=0;
-       var owners=owner[hash];
-       bool isgood;
-       for(i=0;i<owners.length;i++)
-       {
-           if(owners[i]==msg.sender)
-                break;
-       }
-       isgood=(i<owners.length);
-       require(isgood);
-       owners.push(newOwner);
-   }
-  
-  
-    function removeSelf(string hash) public{
-        uint i=0;
-        var owners=owner[hash];
-        bool isgood;
-        for(i=0;i<owners.length;i++)
-        {
-            if(owners[i]==msg.sender)
-                break;
-        }
-        isgood=(i<owners.length);
-        require(isgood);
-        owners[i]=owners[owners.length-1];
-        delete owners[owners.length-1];
-    }
-    
+   
     
 
     

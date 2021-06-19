@@ -1,7 +1,7 @@
 var fs=require("fs");
 var ipfsClient= require("ipfs-http-client")
 var Web3=require("web3")
-var web3=new Web3("http://localhost:8546");
+var web3=new Web3("http://localhost:8545");
 var ipfs = ipfsClient.create("http://localhost:5001");
 var express= require("express");
 var upload=require("express-fileupload");
@@ -127,7 +127,7 @@ var contractins=new web3.eth.Contract([
 		"stateMutability": "view",
 		"type": "function"
 	}
-],"0xBe5ca14819edFC19a34CF36e7Efe2C23435369d6")
+],"0xc03Ff4c56E3b64A9f4867371c8EeF886E6822EcE")
 
 
 app.use(express.json());

@@ -171,10 +171,15 @@ app.post("/",async (req,res)=>{
 			console.log(hashs);
 			const coinbase=await web3.eth.getCoinbase().then(res=>res);
 		
-		
+			try
+			{
 			await contractins.methods.addipfshash(hashs,names,req.files.fileUpload.length,req.body.public=="on").send({from: coinbase,gas:4172387 }).then(function(res){
 				console.log(res);
 			});
+			}catch(error)
+			{
+				console.log(error);
+			}
 		}
 	}
 	

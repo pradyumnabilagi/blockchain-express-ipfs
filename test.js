@@ -116,23 +116,17 @@ var contractins=new web3.eth.Contract([
 		"stateMutability": "view",
 		"type": "function"
 	}
-],"0xBe5ca14819edFC19a34CF36e7Efe2C23435369d6")
+],"0xc03Ff4c56E3b64A9f4867371c8EeF886E6822EcE")
 
 async function test()
 {
     let name="";
-    name=name+String.fromCharCode(5)+"a.jpg";
+    name=name+String.fromCharCode(25)+"benefits-of-pineapple.jpg";
     const coinbase=await web3.eth.getCoinbase().then(res=>res);
-	try{
-    await contractins.methods.addipfshash("1234567890123456789012345678901234567890123456",name,1,true).send({from: coinbase,gas:4172387 }).then(function(res){
-        console.log(res);
-    })
-    }catch(error)
-    {
-        console.log(error);
-        console.log("okman");
-    }  
-    console.log("okman");
+	const {Hashs,Num,FileTypes,Names}= await contractins.methods.getipfshashs("pineapple",3).call({"from":coinbase},function(err,res){
+		return res;
+	});
+    console.log(Hashs);
 
     
 }

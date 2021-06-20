@@ -60,10 +60,11 @@ contract Greeting {
     function isSubstr(string str,string substr) pure private returns (bool){
         bytes memory Str=bytes(str);
         bytes memory SubStr=bytes(substr);
-        if(SubStr.length==0)
+        if(SubStr.length==0 || SubStr.length>Str.length)
             return false;
        uint j=0;
-       for(uint i=0;i<Str.length-SubStr.length+1;i++)
+       uint i=0;
+       for(i=0;i<Str.length-SubStr.length+1;i++)
        {
            
            for( j=0;j<SubStr.length;j++)

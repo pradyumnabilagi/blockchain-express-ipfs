@@ -15,32 +15,6 @@ app.use(express.static('static'))
 
 var contractins=new web3.eth.Contract([
 	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "hashs",
-				"type": "string"
-			},
-			{
-				"name": "names",
-				"type": "string"
-			},
-			{
-				"name": "num",
-				"type": "uint256"
-			},
-			{
-				"name": "ispublic",
-				"type": "bool"
-			}
-		],
-		"name": "addipfshash",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"constant": true,
 		"inputs": [
 			{
@@ -72,6 +46,46 @@ var contractins=new web3.eth.Contract([
 			{
 				"name": "",
 				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "hashs",
+				"type": "string"
+			},
+			{
+				"name": "names",
+				"type": "string"
+			},
+			{
+				"name": "num",
+				"type": "uint256"
+			},
+			{
+				"name": "ispublic",
+				"type": "bool"
+			}
+		],
+		"name": "addipfshash",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getipfsnum",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
 			}
 		],
 		"payable": false,
@@ -112,22 +126,8 @@ var contractins=new web3.eth.Contract([
 		"payable": false,
 		"stateMutability": "view",
 		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "getipfsnum",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
 	}
-],"0xc03Ff4c56E3b64A9f4867371c8EeF886E6822EcE")
+],"0xe774bc1544ec42567DdB2F468984D3cB23D2d0B5")
 
 
 app.use(express.json());

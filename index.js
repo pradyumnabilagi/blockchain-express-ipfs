@@ -9,7 +9,7 @@ var app=express();
 var path=require("path");
 const { strict } = require("assert");
 const { off } = require("process");
-
+const {performance}=require("perf_hooks");
 app.use(express.static('client'))
 app.use(express.static('static'))
 
@@ -201,10 +201,13 @@ app.get("/getfiles", async (req,res)=>{
 		res.status(200).json({"links":[]});
 	}
 	else
-	{	const coinbase=await web3.eth.getCoinbase().then(res=>res);
+	{	
+		var t0=performance.now();
+		const coinbase=await web3.eth.getCoinbase().then(res=>res);
 		const {Hashs,Num,FileTypes,Names}= await contractins.methods.getipfshashs(substring,max).call({"from":coinbase},function(err,res){
 			return res;
 		});
+		var t1=performance.now();
 		let hash;
 		let filetype;
 		let chunks=[];
@@ -242,7 +245,9 @@ app.get("/getfiles", async (req,res)=>{
 			retlist.push(hash+filetype);
 			retname.push(name+filetype);
 		}
-
+		var t2=performance.now();
+		console.log(t1-t0);
+		console.log(t2-t0);
 		res.status(200).json({"links":retlist,"names":retname});
 	}
 })

@@ -12,7 +12,7 @@ const { off } = require("process");
 const {performance}=require("perf_hooks");
 app.use(express.static('client'))
 app.use(express.static('static'))
-
+const readline = require("readline");
 var contractins=new web3.eth.Contract([
 	{
 		"constant": true,
@@ -194,7 +194,7 @@ app.get("/searchfiles",(req,res)=>{
 
 
 app.get("/getfiles", async (req,res)=>{
-
+	let time=0,protime=0;
 	const {substring,max}= req.query;
 	if(substring.length=="" || max<=0)
 	{
@@ -208,6 +208,7 @@ app.get("/getfiles", async (req,res)=>{
 			return res;
 		});
 		var t1=performance.now();
+		protime+=(t1-t0);
 		let hash;
 		let filetype;
 		let chunks=[];
@@ -216,7 +217,7 @@ app.get("/getfiles", async (req,res)=>{
 		let name;
 		let offset=0;
 		const directory = 'static';
-
+		let filesize=0;
 		fs.readdir(directory, (err, files) => {
 			if (err) throw err;
 
@@ -234,26 +235,89 @@ app.get("/getfiles", async (req,res)=>{
 			filetype=FileTypes.substr(i*4,4);
 			hash=Hashs.substr(i*46,46);
 			chunks=[];
+			t0=performance.now();
 			for await (chunk of ipfs.cat(hash))
 			{
 				chunks.push(chunk);
 			}
+			t1=performance.now();
+			time+=(t1-t0);
 			chunks=Buffer.concat(chunks);
+			filesize+=chunks.length
 			fs.writeFile('./static/'+hash+filetype,chunks, function (err) {
 				if (err) return console.log(err);
 			});
 			retlist.push(hash+filetype);
 			retname.push(name+filetype);
 		}
-		var t2=performance.now();
-		console.log(t1-t0);
-		console.log(t2-t0);
+		
+		fs.appendFile("./res/protime.txt",protime+"\n",function (err) {
+			if (err) return console.log(err);
+		});
+		fs.appendFile("./res/time.txt",time+"\n",function (err) {
+			if (err) return console.log(err);
+		});
+		fs.writeFile("./res/size.txt",filesize+"\n",function (err) {
+			if (err) return console.log(err);
+		});
+		console.log(protime,time);
 		res.status(200).json({"links":retlist,"names":retname});
 	}
 })
 
 
 
+app.get("/results",async (req,res)=>{
+	let readable = fs.createReadStream("./res/protime.txt");
+	let reader = readline.createInterface({ input: readable });
+	
+	  let i=0;
+	  let protime=0,time=0;
+	for await( line of reader )
+	{
+	  if(i>0)
+	  {
+		  protime+=parseFloat(line);
+	  }
+	  i++;
+	}
+	protime=protime/(i-1);
+	reader.close();
+	readable.close();
+  
+	 readable = fs.createReadStream("./res/time.txt");
+	 reader = readline.createInterface({ input: readable });
+	
+	  i=0;
+	for await( line of reader )
+	{
+	  if(i>0)
+	  {
+		  time+=parseFloat(line);
+	  }
+	  i++;
+	}
+	console.log(time,i);
+	time=time/(i-1);
+	reader.close();
+	readable.close();
+  
+	let filesize;
+	readable = fs.createReadStream("./res/size.txt");
+	 reader = readline.createInterface({ input: readable });
+	
+	  i=0;
+	for await( line of reader )
+	{
+		filesize=parseFloat(line);
+	}
+	reader.close();
+	readable.close();
+  
+	res.status(200).json({protime,time,filesize});
+
+
+})
 
 
 
